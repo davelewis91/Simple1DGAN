@@ -42,18 +42,23 @@ class Discriminator(nn.Module):
     """
     Simple feed-forward NN to discriminate the 'real' and generated data
     """
-    def __init__(self):
+    def __init__(self, n_hn=25):
         super().__init__()
         ## one hidden layer with 25 nodes
-        self.hidden_1 = nn.Linear(2, 25)
-        self.output_layer = nn.Linear(25, 1)
+        self.hidden_1 = nn.Linear(2, n_hn)
+        self.hidden_2 = nn.Linear(n_hn, n_hn)
+        self.output_layer = nn.Linear(n_hn, 1)
 
-        self.relu = nn.ReLU()
+        self.relu = nn.LeakyReLU()
+        self.sigmoid = nn.Sigmoid()
     
     def forward(self, x):
         x = self.hidden_1(x)
         x = self.relu(x)
+        x = self.hidden_2(x)
+        x = self.relu(x)
         x = self.output_layer(x)
+        x = self.sigmoid(x)
         return x
 
 if __name__ == '__main__':

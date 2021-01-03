@@ -2,6 +2,7 @@
 Methods for making 'real' data from a choice of several
 1D functions
 """
+import math
 import random
 import torch
 from torch.utils.data import Dataset
@@ -10,9 +11,13 @@ def power_x(x: torch.Tensor, power: float):
     return x ** power
 
 def sin_x(x: torch.Tensor):
+    # scale x:[-1,1] to x:[-pi, pi]
+    x = x * math.pi
     return torch.sin(x)
 
 def cos_x(x: torch.Tensor):
+    # scale x:[-1,1] to x:[-pi, pi]
+    x = x * math.pi
     return torch.cos(x)
 
 def exp_x(x: torch.Tensor):
@@ -42,8 +47,8 @@ def generate_points(n: int = 100, func: str = 'power', **kwargs):
     data: torch.Tensor
         Generated data points
     """
-    # generate points in range [0, 1]
-    x = torch.rand(n) 
+    # generate points in range [-1, 1]
+    x = torch.rand(n) * 2 - 1
     # find y-values
     y = METHODS[func](x, **kwargs) 
     # reshape so each point is a different sample

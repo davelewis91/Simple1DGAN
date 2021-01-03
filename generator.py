@@ -6,18 +6,21 @@ import torch
 import torch.nn as nn
 
 class Generator(nn.Module):
-    def __init__(self, latent_dim):
+    def __init__(self, latent_dim, n_hn=15):
         super().__init__()
         # single hidden layer with 15 nodes
-        self.hidden_1 = nn.Linear(latent_dim, 15)
-        self.output_layer = nn.Linear(15, 2)
+        self.hidden_1 = nn.Linear(latent_dim, n_hn)
+        self.output_layer = nn.Linear(n_hn, 2)
+        self.relu = nn.LeakyReLU()
 
-        self.relu = nn.ReLU()
+        self.main = nn.Sequential(
+            self.hidden_1,
+            self.relu,
+            self.output_layer
+        )
     
     def forward(self, x):
-        x = self.hidden_1(x)
-        x = self.relu(x)
-        x = self.output_layer(x)
+        x = self.main(x)
         return x
 
 def test_generator(data):
